@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>闲鱼搜索</title>
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        //版本历史：
+        //0827 使用gb2312方式encode中文参数字符，加入统计
+        //0905 使用utf-8方式encode中文参数字符
+        //0906 加入回车搜索商品的功能
+        //0921 进入页面，光标自动定位到文本框中
+        //0926 页面使用了样式，TAB页切换
+
+
+        function  windowsOpen(strUrl) {
+            $("#targetUrl").attr('href',strUrl)
+            //alert('nihao')
+            //alert( $("#targetUrl").attr('href'))
+            //$("#targetUrl").trigger("click");
+            document.getElementById("targetUrl").click();
+        }
+
+        function goodsSearch(keyword){
+              //alert(utf8ToGBK(decodeURI(keyword)))
+				 var searchUrl='https://s.2.taobao.com/list/list.htm?q={0}&search_type=item&_input_charset=utf8'.replace("{0}",encodeURI(keyword));
+				 windowsOpen(searchUrl);
+			}
+			
+        function  enterDwon(event){
+            //alert("code："+event.which);
+            if(event.which==13)
+            {
+                $("#btn_goodsSearch").click();
+            }
+        }
+
+        function  aa() {
+            alert('aa');
+        }
+
+        function sellorSearch(keyword){
+            var searchUrl='https://s.2.taobao.com/list/list.htm?&usernick={0}&_input_charset=utf8'.replace("{0}",encodeURI(keyword));
+            windowsOpen(searchUrl);
+          }
+
+        $(document).ready(function(){
+            //文本框获得焦点
+            $("#s1").focus();
+
+          //$("#btn_goodsSearch").click(goodsSearch);
+          $("body").keydown(enterDwon);
+
+         //$("#btn_sellorSearch").click(sellorSearch);
+
+          $('#submit').click(function(){
+			var index = $('#search-bd li.selected').index();
+			var keyword = $('#search-hd .search-input').eq(index).val()
+			//alert(keyword);
+            if(index==0){
+                goodsSearch(keyword);
+            }else{
+                sellorSearch(keyword);
+            }
+		});
+
+          //通用头部搜索切换
+		$('#search-hd .search-input').on('input propertychange',function(){
+			var val = $(this).val();
+			if(val.length > 0){
+				$('#search-hd .pholder').hide(0);
+			}else{
+				var index = $('#search-bd li.selected').index();
+				$('#search-hd .pholder').eq(index).show().siblings('.pholder').hide(0);
+			}
+		})
+		$('#search-bd li').click(function(){
+			var index = $(this).index();
+			$('#search-hd .pholder').eq(index).show().siblings('.pholder').hide(0);
+			$('#search-hd .search-input').eq(index).show().siblings('.search-input').hide(0);
+			$(this).addClass('selected').siblings().removeClass('selected');
+			$('#search-hd .search-input').val('');
+			$('#search-hd .search-input').eq(index).focus();
+		});
+
+        });
+
+
+
+
+
+    </script>
+
+    <style>
+
+        .center
+        {
+            text-align: center
+        }
+
+        .hidden
+        {
+            opacity:0
+        }
+
+*{margin:0;padding:0;list-style:none;}
+.search-form{width:575px;margin:100px auto;overflow: hidden;}
+.search-form .search-bd{height: 25px;}
+.search-form .search-bd li{font-size:12px;width:60px;height: 25px;line-height: 25px;text-align:center;float: left;cursor: pointer;background-color: #eee;color: #666;}
+.search-form .search-bd li.selected{color: #fff;font-weight: 700;background-color: #0799b6;}
+.search-form .search-hd{height:34px;background-color: #0799b6;padding: 3px;position: relative;}
+.search-form .search-hd .search-input{width: 490px;height: 22px;line-height: 22px;padding: 6px 0;background: none;text-indent: 10px;border: 0;outline: none;position: relative;left: 3px;top: 0;z-index: 5;#margin-left:-10px;}
+.search-form .search-hd .btn-search{width: 70px;height: 34px;line-height:34px;position: absolute;right: 3px;top: 3px;border: 0;z-index: 6;cursor: pointer;font-size: 12px;color: #fff;font-weight: 700;background: none;outline: none;}
+.search-form .search-hd .pholder{display: inline-block;padding: 2px 0;font-size: 12px;color: #999;position: absolute;left: 13px;top: 11px;z-index: 4;background: url(images/zoom.jpg) no-repeat 0 0;padding-left:25px;#top:11px;}
+.search-form .search-hd .s2,.search-form .search-hd #s2{display: none;}
+.search-form .search-bg{width: 495px;height: 34px;background-color: #fff;position: absolute;left: 3px;top: 3px;z-index: 1;}
+
+a:link, a:visited {
+    color:#0799b6;
+    text-decoration:none;
+}
+
+a:hover, a:active {
+    color:#000000;
+    text-decoration:none;
+}
+
+</style>
+
+
+</head>
+<body>
+<div class="search-form">
+    <div class="center">
+        <a href="about.html?from=icon" target='_blank'><img src="images/icon1.jpg"  alt="闲鱼搜索" border="0"/></a>
+    </div>
+	<div id="search-bd" class="search-bd">
+		<ul>
+			<li class="selected">搜商品</li>
+			<li>搜卖家</li>
+		</ul>
+	</div>
+	<div id="search-hd" class="search-hd">
+		<div class="search-bg"></div>
+		<input type="text" id="s1" class="search-input">
+		<input type="text" id="s2" class="search-input">
+		<span class="s1 pholder">请输入闲鱼物品关键词</span>
+		<span class="s2 pholder">请输入闲鱼卖家名称</span>
+		<button id="submit" class="btn-search" value="搜索">搜索</button>
+	</div>
+</div>
+
+
+
+
+
+
+<div class="hidden">
+    <a id="targetUrl" href="http://www.baidu.com" target='_blank'></a>
+</div>
+<div/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="center">
+    <a href="about.html" target='_blank'>关于</a>
+</div>
+<br>
+<div class="center">
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1263855005'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1263855005%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+
+
+</body>
+
+
+</html>
