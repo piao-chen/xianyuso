@@ -5,12 +5,14 @@
     <title>闲鱼搜索</title>
     <script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript">
+		//write by piaochen github:https://github.com/piao-chen/xianyuso
         //版本历史：
         //0827 使用gb2312方式encode中文参数字符，加入统计
         //0905 使用utf-8方式encode中文参数字符
         //0906 加入回车搜索商品的功能
         //0921 进入页面，光标自动定位到文本框中
         //0926 页面使用了样式，TAB页切换
+		//1004 解决、CHROME下回车搜索失效的问题
 
 
         function  windowsOpen(strUrl) {
@@ -31,7 +33,7 @@
             //alert("code："+event.which);
             if(event.which==13)
             {
-                $("#btn_goodsSearch").click();
+                $("#submit").click();
             }
         }
 
@@ -43,6 +45,17 @@
             var searchUrl='https://s.2.taobao.com/list/list.htm?&usernick={0}&_input_charset=utf8'.replace("{0}",encodeURI(keyword));
             windowsOpen(searchUrl);
           }
+		  
+		function searchDown(){
+			var index = $('#search-bd li.selected').index();
+			var keyword = $('#search-hd .search-input').eq(index).val()
+			//alert(keyword);
+            if(index==0){
+                goodsSearch(keyword);
+            }else{
+                sellorSearch(keyword);
+            }
+		}
 
         $(document).ready(function(){
             //文本框获得焦点
@@ -53,16 +66,7 @@
 
          //$("#btn_sellorSearch").click(sellorSearch);
 
-          $('#submit').click(function(){
-			var index = $('#search-bd li.selected').index();
-			var keyword = $('#search-hd .search-input').eq(index).val()
-			//alert(keyword);
-            if(index==0){
-                goodsSearch(keyword);
-            }else{
-                sellorSearch(keyword);
-            }
-		});
+          $('#submit').click(searchDown);
 
           //通用头部搜索切换
 		$('#search-hd .search-input').on('input propertychange',function(){
@@ -146,7 +150,7 @@ a:hover, a:active {
 		<input type="text" id="s2" class="search-input">
 		<span class="s1 pholder">请输入闲鱼物品关键词</span>
 		<span class="s2 pholder">请输入闲鱼卖家名称</span>
-		<button id="submit" class="btn-search" value="搜索">搜索</button>
+		<input type="button" id="submit" class="btn-search" value="搜索"></button>
 	</div>
 </div>
 
